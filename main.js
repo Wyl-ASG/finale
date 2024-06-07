@@ -2,9 +2,14 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
 // To allow for the camera to move around the scene
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
-// To allow for importing the .obj file
-import { OBJLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/OBJLoader.js";
-import { STLLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/STLLoader.js";
+// Import the OFFLoader class
+import { OFFLoader } from './OFFLoader.js';
+// Import the ApiClient class
+import { ApiClient } from './ApiClient.js';
+
+
+
+
 
 // Create a Three.JS Scene
 const scene = new THREE.Scene();
@@ -16,7 +21,7 @@ let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 
 // Keep the 3D object on a global variable so we can access it later
-let object;
+
 
 // OrbitControls allow the camera to move around the scene
 let controls;
@@ -24,94 +29,89 @@ let controls;
 // Set which object to render
 let objToRender = 'dino';
 
-// Instantiate a loader for the .obj file
-const loader = new OBJLoader();
-const stlloader = new STLLoader();
 // Create a material
 const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 200 });
+const materialsurface = new THREE.MeshStandardMaterial({
+  color: 0xaaaaaa, // Base color of the material
+  metalness: 0.8,  // Higher value for more metallic appearance
+  roughness: 0.2,  // Lower value for a shinier surface
+});
 
-// Load the file
-loader.load(
-  `models/${objToRender}/scene.obj`, // Use backticks for template literal
-  function (obj) {
-    // Apply material to each mesh in the loaded object
-    obj.traverse(function (child) {
-      if (child.isMesh) {
-        child.material = material;
+
+// Create an instance of the ApiClient with the base URL
+const apiClient = new ApiClient('https://35.198.233.36:8090/api/smartrpd');
+const parentObject = new THREE.Object3D();
+scene.add(parentObject);
+(async () => {
+const data = {
+  machine_id: '3a0df9c37b50873c63cebecd7bed73152a5ef616',
+  uuid: 'm+Cakg1hzVqCwVeJfNGRpSyvRXv4',
+  caseIntID: '797'
+};
+let off;
+const urls = ['/stl/get','/surface/getall']
+let responseDatas = [];
+let responseData;
+  try {
+    // Call the post method and wait for the response
+    for(const url of urls)
+      {
+    
+    responseData = await apiClient.post(url, [data]);
+    console.log('Success:', responseData);
+    responseDatas = responseDatas.concat(responseData);
       }
-    });
+  } catch (error) {
+    console.error('Error:', error);
+  }
 
-    // If the file is loaded, add it to the scene
-    object = obj;
-    scene.add(object);
-  },
-  function (xhr) {
-    // While it is loading, log the progress
-    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-  },
-  function (error) {
-    // If there is an error, log it
-    console.error(error);
-  }
-);
-loader.load(
-  `models/${objToRender}/scene.obj`, // Use backticks for template literal
-  function (obj) {
-    // Apply material to each mesh in the loaded object
-    obj.traverse(function (child) {
-      if (child.isMesh) {
-        child.material = material;
-      }
-    });
 
-    // If the file is loaded, add it to the scene
-    object = obj;
-    scene.add(object);
-  },
-  function (xhr) {
-    // While it is loading, log the progress
-    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-  },
-  function (error) {
-    // If there is an error, log it
-    console.error(error);
-  }
-);
-stlloader.load(
-  `models/${objToRender}/scene.stl`, // Use backticks for template literal
-  function (geometry) {
-    // If the file is loaded, create a mesh and add it to the scene
-    const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 200 });
-    object = new THREE.Mesh(geometry, material);
-    scene.add(object);
-  },
-  function (xhr) {
-    // While it is loading, log the progress
-    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-  },
-  function (error) {
-    // If there is an error, log it
-    console.error(error);
-  }
-);
 
-stlloader.load(
-  `models/${objToRender}/scene.stl`, // Use backticks for template literal
-  function (geometry) {
-    // If the file is loaded, create a mesh and add it to the scene
-    const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 200 });
-    object = new THREE.Mesh(geometry, material);
-    scene.add(object);
-  },
-  function (xhr) {
-    // While it is loading, log the progress
-    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-  },
-  function (error) {
-    // If there is an error, log it
-    console.error(error);
-  }
-);
+
+for (const offFile of responseDatas) {
+  let loader;
+  if(offFile.filename.includes('surface'))
+    {
+      loader = new OFFLoader(materialsurface);
+    }
+    else{
+      loader = new OFFLoader(material);
+    }
+    
+    // Fetch the OFF file data
+    //const offData = await apiClient.get(offFile); // Assuming the ApiClient has a get method for fetching data
+    const offdata = atob(offFile.data);
+    // Load the OFF file
+    const mesh = loader.parse(offdata);
+
+    // Add the mesh to the parent object
+    parentObject.add(mesh);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Instantiate the OFFLoader
+
+
+// Load the OFF file
 
 
 // Instantiate a new renderer and set its size
@@ -130,34 +130,30 @@ if (container) {
 camera.position.z = objToRender === "dino" ? 25 : 500;
 
 // Add lights to the scene, so we can actually see the 3D model
-const topLight = new THREE.DirectionalLight(0xffffff, 1); // (color, intensity)
-topLight.position.set(500, 500, 500); // top-left-ish
-topLight.castShadow = true;
-scene.add(topLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
+  scene.add(ambientLight);
 
-const ambientLight = new THREE.AmbientLight(0x333333, objToRender === "dino" ? 5 : 1);
-scene.add(ambientLight);
+  // Add directional lights from different directions for even lighting
+  const lights = [
+    new THREE.DirectionalLight(0xffffff, 0.5), // Front light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Back light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Left light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Right light
+  ];
 
-// Additional lights for better illumination
-const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
-scene.add(hemisphereLight);
-/*
-const pointLight1 = new THREE.PointLight(0xffffff, 1, 100);
-pointLight1.position.set(50, 50, 50);
-scene.add(pointLight1);
+  lights[0].position.set(0, 0, 1);
+  lights[1].position.set(0, 0, -1);
+  lights[2].position.set(-1, 0, 0);
+  lights[3].position.set(1, 0, 0);
 
-const pointLight2 = new THREE.PointLight(0xffffff, 1, 100);
-pointLight2.position.set(-50, -50, -50);
-scene.add(pointLight2);
-*/
+  lights.forEach(light => {
+    scene.add(light);
+  });
 
-const leftLight = new THREE.DirectionalLight(0xffffff, 1); // (color, intensity)
-topLight.position.set(-500,-500,500); // top-left-ish
-topLight.castShadow = true;
-scene.add(leftLight);
+
 // This adds controls to the camera, so we can rotate / zoom it with the mouse
-if (objToRender === "dino") {
-  controls = new OrbitControls(camera, renderer.domElement);
+if(objToRender === 'dino'){
+controls = new OrbitControls(camera, renderer.domElement);
 }
 
 // Render the scene
@@ -166,11 +162,7 @@ function animate() {
   // Here we could add some code to update the scene, adding some automatic movement
 
   // Make the eye move
-  if (object && objToRender === "eye") {
-    // I've played with the constants here until it looked good 
-    object.rotation.y = -3 + mouseX / window.innerWidth * 3;
-    object.rotation.x = -1.2 + mouseY * 2.5 / window.innerHeight;
-  }
+
   renderer.render(scene, camera);
 }
 
@@ -187,5 +179,10 @@ document.onmousemove = (e) => {
   mouseY = e.clientY;
 };
 
+
+
+
+
 // Start the 3D rendering
 animate();
+})();
