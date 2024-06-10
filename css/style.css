@@ -1,3 +1,16 @@
+
+@keyframes loading {
+  0% {
+      left: -100%;
+  }
+  50% {
+      left: 100%;
+  }
+  100% {
+      left: 100%;
+  }
+}
+
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
@@ -22,3 +35,4 @@ header h1 {
   top: 0;
   left: 0;
 }
+
