@@ -1,8 +1,7 @@
 // Import the THREE.js library
-
-import * as THREE from '/node_modules/three/build/three.module.js';
+import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
 // To allow for the camera to move around the scene
-import { OrbitControls } from '/node_modules/three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
 // Import the OFFLoader class
 import { OFFLoader } from './OFFLoader.js';
 // Import the ApiClient class
@@ -36,7 +35,7 @@ let objToRender = 'dino';
 // Create a material
 const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 0 });
 const materialsurface = new THREE.MeshStandardMaterial({
-  color: 0x333333, // Base color of the material
+  color: 0xaaaaaa, // Base color of the material
   metalness: 0.8,  // Higher value for more metallic appearance
   roughness: 0.2,  // Lower value for a shinier surface
 });
@@ -204,7 +203,6 @@ function unixToHumanReadable(unixTimestamp) {
 finished = true;
 // Instantiate a new renderer and set its size
 const renderer = new THREE.WebGLRenderer({ alpha: true }); // Alpha: true allows for the transparent background
-
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 // Add the renderer to the DOM
@@ -221,13 +219,13 @@ camera.position.z = objToRender === "dino" ? 100 : 500;
 // Add lights to the scene, so we can actually see the 3D model
 const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
   scene.add(ambientLight);
-  const lightIntensity = 15;
+
   // Add directional lights from different directions for even lighting
   const lights = [
-    new THREE.DirectionalLight(0xffffff, lightIntensity), // Front light
-    new THREE.DirectionalLight(0xffffff, lightIntensity), // Back light
-    new THREE.DirectionalLight(0xffffff, lightIntensity), // Left light
-    new THREE.DirectionalLight(0xffffff, lightIntensity), // Right light
+    new THREE.DirectionalLight(0xffffff, 1), // Front light
+    new THREE.DirectionalLight(0xffffff, 1), // Back light
+    new THREE.DirectionalLight(0xffffff, 1), // Left light
+    new THREE.DirectionalLight(0xffffff, 1), // Right light
   ];
 
   lights[0].position.set(0, 0, 1);
@@ -269,14 +267,6 @@ document.onmousemove = (e) => {
 };
 
 
-const redLight = new THREE.DirectionalLight(0xff0000); // Red light
-const whiteLight = new THREE.DirectionalLight(0xffffff); // White light
-
-// Set the positions of the lights
-redLight.position.set(1, 1, 1).normalize();
-whiteLight.position.set(-1, -1, -1).normalize();
-
-// Add the lights to the scene
 
 
 
