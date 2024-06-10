@@ -7,10 +7,7 @@ import { OFFLoader } from './OFFLoader.js';
 // Import the ApiClient class
 import { ApiClient } from './ApiClient.js';
 
-import { addVisibilityAndTransparencyControls } from './control.js';
 
-
-window.finished = false;
 
 
 
@@ -33,7 +30,7 @@ let controls;
 let objToRender = 'dino';
 
 // Create a material
-const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 0 });
+const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 200 });
 const materialsurface = new THREE.MeshStandardMaterial({
   color: 0xaaaaaa, // Base color of the material
   metalness: 0.8,  // Higher value for more metallic appearance
@@ -51,40 +48,8 @@ const data = {
   uuid: 'm+Cakg1hzVqCwVeJfNGRpSyvRXv4',
   caseIntID: '797'
 };
-let positionDatas = [];
-let positionData;
-const loginData = {
-  id: 0,
-  username:"faid",
-  email: "",
-  password:"faid30413041D**",
-  salt:"",
-  create_time:0,
-  is_admin:0,
-  uuid:"",
-  deleted:0
-
-  
-}
-const urldatas = ['/user/login','/case/get/797'];
-try {
-  // Call the post method and wait for the response
-  for(const urldata of urldatas)
-    {
-  
-  positionData = await apiClient.post(urldata, [data,loginData]);
-  console.log('Success:', positionData);
-  positionDatas = positionDatas.concat(positionData);
-    }
-} catch (error) {
-  console.error('Error:', error);
-}
-
-const time = unixToHumanReadable(positionData.creation_date);
-createTextbox("Creation Date: "+ time,'bottom-left');
-createTextbox("Case ID: "+positionData.case_id,'bottom-right');
 let off;
-const urls = ['/stl/get','/surface/getall'];
+const urls = ['/stl/get','/surface/getall']
 let responseDatas = [];
 let responseData;
   try {
@@ -99,24 +64,18 @@ let responseData;
   } catch (error) {
     console.error('Error:', error);
   }
-let pos;
-if(positionData!= null)
-  {
-    pos= {'lower':[positionData.lower_insertion_angle_x,positionData.lower_insertion_angle_y,positionData.lower_insertion_angle_z],
-          'upper':[positionData.upper_insertion_angle_x,positionData.upper_insertion_angle_y,positionData.upper_insertion_angle_z]};
-  }
 
 
-let name = [];
+
+
 for (const offFile of responseDatas) {
   let loader;
-  name.push(offFile.filename);
   if(offFile.filename.includes('surface'))
     {
-      loader = new OFFLoader(materialsurface.clone());
+      loader = new OFFLoader(materialsurface);
     }
     else{
-      loader = new OFFLoader(material.clone());
+      loader = new OFFLoader(material);
     }
     
     // Fetch the OFF file data
@@ -124,63 +83,17 @@ for (const offFile of responseDatas) {
     const offdata = atob(offFile.data);
     // Load the OFF file
     const mesh = loader.parse(offdata);
-    //addVisibilityControl(mesh, 'BoxMesh');
-    //addTransparencyControl(material, 'BoxMesh');
 
-    if(offFile.filename.includes('surface'))
-      {
-        if(offFile.filename.includes('upper'))
-          {
-            changeMeshRotation(mesh,pos['upper'][0],pos['upper'][1],pos['upper'][2]);
-          }
-          else{
-            changeMeshRotation(mesh,pos['lower'][0],pos['lower'][1],pos['lower'][2]);
-          }
-      }
     // Add the mesh to the parent object
-    console.log(pos);
     parentObject.add(mesh);
 
 }
-function changeMeshRotation(mesh, x, y, z) {
-  mesh.rotation.set(THREE.MathUtils.degToRad(x), THREE.MathUtils.degToRad(y), THREE.MathUtils.degToRad(z));
-}
 
 
 
-function createTextbox(text, position) {
-  const textbox = document.createElement('div');
-  textbox.textContent = text;
-  textbox.style.position = 'fixed';
-  textbox.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-  textbox.style.padding = '10px';
-  textbox.style.border = '1px solid #ccc';
-  textbox.style.borderRadius = '5px';
-  textbox.style.fontFamily = 'Arial, sans-serif';
-  textbox.style.fontSize = '14px';
-  textbox.style.color = '#333';
-  textbox.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
 
-  if (position === 'bottom-left') {
-      textbox.style.bottom = '10px';
-      textbox.style.left = '10px';
-  } else if (position === 'bottom-right') {
-      textbox.style.bottom = '10px';
-      textbox.style.right = '10px';
-  }
-  document.body.appendChild(textbox);
-}
-function unixToHumanReadable(unixTimestamp) {
-  const date = new Date(unixTimestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-  const day = date.getDate().toString().padStart(2, '0');
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const seconds = date.getSeconds().toString().padStart(2, '0');
-  
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+
+
 
 
 
@@ -200,7 +113,7 @@ function unixToHumanReadable(unixTimestamp) {
 
 // Load the OFF file
 
-finished = true;
+
 // Instantiate a new renderer and set its size
 const renderer = new THREE.WebGLRenderer({ alpha: true }); // Alpha: true allows for the transparent background
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -214,7 +127,7 @@ if (container) {
 }
 
 // Set how far the camera will be from the 3D model
-camera.position.z = objToRender === "dino" ? 100 : 500;
+camera.position.z = objToRender === "dino" ? 25 : 500;
 
 // Add lights to the scene, so we can actually see the 3D model
 const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
@@ -222,10 +135,10 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
 
   // Add directional lights from different directions for even lighting
   const lights = [
-    new THREE.DirectionalLight(0xffffff, 1), // Front light
-    new THREE.DirectionalLight(0xffffff, 1), // Back light
-    new THREE.DirectionalLight(0xffffff, 1), // Left light
-    new THREE.DirectionalLight(0xffffff, 1), // Right light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Front light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Back light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Left light
+    new THREE.DirectionalLight(0xffffff, 0.5), // Right light
   ];
 
   lights[0].position.set(0, 0, 1);
@@ -272,5 +185,4 @@ document.onmousemove = (e) => {
 
 // Start the 3D rendering
 animate();
-addVisibilityAndTransparencyControls(parentObject,name);
 })();

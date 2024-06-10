@@ -1,7 +1,7 @@
 {
   "name": "web-3dmodel-threejs-main",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,12 +11,7 @@
   "description": "",
   "dependencies": {
     "fs": "^0.0.1-security",
-    "require": "^0.4.4",
-    "dat.gui": "^0.7.6",
+    "require": "^2.4.20",
     "three": "^0.165.0"
-  },
-  "devDependencies": {
-    "@types/dat.gui": "^0.7.13",
-    "@types/three": "^0.165.0"
   }
 }
