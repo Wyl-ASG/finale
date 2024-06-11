@@ -27,7 +27,10 @@ const paramValue = url.searchParams.get('id');
 // Create a Three.JS Scene
 const scene = new THREE.Scene();
 // Create a new camera with positions and angles
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+let camera
+const aspect = window.innerWidth / window.innerHeight;
+camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -500, 1000 );
+
 
 // Keep track of the mouse position, so we can make the eye move
 let mouseX = window.innerWidth / 2;
@@ -47,7 +50,7 @@ const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x1111
 const materialsurface = new THREE.MeshStandardMaterial({
   color: 0xaaaaaa, // Base color of the material
   metalness: 0.8,  // Higher value for more metallic appearance
-  roughness: 0.2,  // Lower value for a shinier surface
+  roughness: 0.2, // Lower value for a shinier surface
 });
 
 // Create an instance of the ApiClient with the base URL
@@ -93,7 +96,7 @@ const time = unixToHumanReadable(positionData.creation_date);
 createTextbox("Creation Date: "+ time,'bottom-left');
 createTextbox("Case ID: "+positionData.case_id,'bottom-right');
 let off;
-const urls = ['/stl/get','/surface/getall'];
+const urls = ['/surface/getall'];
 let responseDatas = [];
 let responseData;
   try {
@@ -166,9 +169,14 @@ function createTextbox(text, position) {
   textbox.style.border = '1px solid #ccc';
   textbox.style.borderRadius = '5px';
   textbox.style.fontFamily = 'Arial, sans-serif';
-  textbox.style.fontSize = '14px';
+  textbox.style.fontSize = '20px';
   textbox.style.color = '#333';
   textbox.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+  textbox.style.width = '300px';
+  textbox.style.height = '35px';
+  
+  // Optionally, add a media query to adjust size for very small screens
+
 
   if (position === 'bottom-left') {
       textbox.style.bottom = '10px';
@@ -223,6 +231,7 @@ if (container) {
 }
 
 // Set how far the camera will be from the 3D model
+
 camera.position.z = objToRender === "dino" ? 100 : 500;
 
 // Add lights to the scene, so we can actually see the 3D model
@@ -274,10 +283,13 @@ document.onmousemove = (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 };
+camera.position.set(0,0,50);
+camera.zoom =7;
+camera.updateProjectionMatrix();
+console.log(camera);
+addResetButton(camera, controls);
+console.log(camera)
 
-const initial = camera.position.clone();
-console.log(initial);
-addResetButton(camera, controls,initial);
 
 // Start the 3D rendering
 animate();

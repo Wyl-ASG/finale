@@ -1,12 +1,17 @@
-// controls.js
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
 import { GUI } from 'https://cdn.skypack.dev/dat.gui';
 
+function addVisibilityAndTransparencyControls(parentObject, name) {
+    const guiContainer = document.createElement('div');
+    guiContainer.style.position = 'absolute';
+    guiContainer.style.top = '10px'; // Adjust as needed
+    guiContainer.style.left = '10px'; // Adjust as needed
+    guiContainer.style.width = '300px'; // Fixed width
+    guiContainer.style.height = '400px'; // Fixed height
+    document.body.appendChild(guiContainer);
 
+    const gui = new GUI({ autoPlace: false });
+    guiContainer.appendChild(gui.domElement);
 
-export function addVisibilityAndTransparencyControls(parentObject,name) {
-    const gui = new GUI();
-    
     parentObject.children.forEach((child, index) => {
         if (child.isMesh) {
             const folder = gui.addFolder(name[index]);
@@ -19,10 +24,22 @@ export function addVisibilityAndTransparencyControls(parentObject,name) {
             folder.add(material, 'opacity', 0, 1).name('Transparency').onChange((value) => {
                 material.transparent = true;
                 material.opacity = value;
-
             });
 
             folder.open();
         }
     });
+
+    // Prevent resizing of the GUI container
+    const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+            const { width, height } = entry.contentRect;
+            guiContainer.style.width = width + 'px';
+            guiContainer.style.height = height + 'px';
+        }
+    });
+
+    resizeObserver.observe(guiContainer);
 }
+
+export { addVisibilityAndTransparencyControls };
