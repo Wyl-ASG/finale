@@ -1,6 +1,6 @@
 // controls.js
 import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
-import { GUI } from 'https://github.com/Wyl-ASG/finale/blob/main/node_modules/dat.gui/build/dat.gui.js'
+import { GUI } from 'https://cdn.skypack.dev/dat.gui';
 
 
 
