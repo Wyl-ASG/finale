@@ -8,11 +8,21 @@ import { OFFLoader } from './OFFLoader.js';
 import { ApiClient } from './ApiClient.js';
 
 import { addVisibilityAndTransparencyControls } from './control.js';
+import { addResetButton } from './resetButton.js'; // Assuming the resetButton.js file is in the same directory
+
+// Your existing code here...
+
+// Call the addResetButton function after your main code
+
 
 
 window.finished = false;
 
+// Get the current URL
+const url = new URL(window.location.href);
 
+// Get the value of a specific query parameter, e.g., "param"
+const paramValue = url.searchParams.get('id');
 
 // Create a Three.JS Scene
 const scene = new THREE.Scene();
@@ -40,7 +50,6 @@ const materialsurface = new THREE.MeshStandardMaterial({
   roughness: 0.2,  // Lower value for a shinier surface
 });
 
-
 // Create an instance of the ApiClient with the base URL
 const apiClient = new ApiClient('https://35.198.233.36:8090/api/smartrpd');
 const parentObject = new THREE.Object3D();
@@ -49,7 +58,7 @@ scene.add(parentObject);
 const data = {
   machine_id: '3a0df9c37b50873c63cebecd7bed73152a5ef616',
   uuid: 'm+Cakg1hzVqCwVeJfNGRpSyvRXv4',
-  caseIntID: '797'
+  caseIntID: paramValue
 };
 let positionDatas = [];
 let positionData;
@@ -66,7 +75,7 @@ const loginData = {
 
   
 }
-const urldatas = ['/user/login','/case/get/797'];
+const urldatas = ['/user/login','/case/get/'+paramValue];
 try {
   // Call the post method and wait for the response
   for(const urldata of urldatas)
@@ -266,9 +275,9 @@ document.onmousemove = (e) => {
   mouseY = e.clientY;
 };
 
-
-
-
+const initial = camera.position.clone();
+console.log(initial);
+addResetButton(camera, controls,initial);
 
 // Start the 3D rendering
 animate();
