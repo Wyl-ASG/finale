@@ -96,7 +96,7 @@ const time = unixToHumanReadable(positionData.creation_date);
 createTextbox("Creation Date: "+ time,'bottom-left');
 createTextbox("Case ID: "+positionData.case_id,'bottom-right');
 let off;
-const urls = ['/surface/getall'];
+const urls = ['/stl/get','/surface/getall'];
 let responseDatas = [];
 let responseData;
   try {
