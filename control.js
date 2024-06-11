@@ -1,6 +1,6 @@
 // controls.js
-import * as THREE from '/node_modules/three/build/three.module.js';
-import { GUI } from '/node_modules/dat.gui/build/dat.gui.module.js';
+import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+import { GUI } from '/finale/node_modules/dat.gui/build/dat.gui.module.js';
 
 
 export function addVisibilityAndTransparencyControls(parentObject,name) {
