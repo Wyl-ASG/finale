@@ -9,7 +9,8 @@ import { ApiClient } from './ApiClient.js';
 
 import { addVisibilityAndTransparencyControls } from './control.js';
 import { addResetButton } from './resetButton.js'; // Assuming the resetButton.js file is in the same directory
-import { roughness } from "three/examples/jsm/nodes/Nodes.js";
+
+
 
 
 // Your existing code here...
