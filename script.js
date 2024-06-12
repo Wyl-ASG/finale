@@ -30,5 +30,5 @@ document.addEventListener("DOMContentLoaded", function() {
         if (finished) {
             removeLoadingBar();
         }
-    }, 500); // Check every second
+    }, 1000); // Check every second
 });
