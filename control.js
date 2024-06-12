@@ -1,4 +1,4 @@
-import { GUI } from '/node_modules/dat.gui/build/dat.gui.module.js';
+import { GUI } from 'https://cdn.skypack.dev/dat.gui';
 
 function addVisibilityAndTransparencyControls(parentObject, name) {
     const guiContainer = document.createElement('div');
