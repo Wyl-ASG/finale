@@ -9,6 +9,7 @@ import { ApiClient } from './ApiClient.js';
 
 import { addVisibilityAndTransparencyControls } from './control.js';
 import { addResetButton } from './resetButton.js'; // Assuming the resetButton.js file is in the same directory
+import { roughness, shininess } from "three/examples/jsm/nodes/Nodes.js";
 
 // Your existing code here...
 
@@ -48,9 +49,9 @@ let objToRender = 'dino';
 // Create a material
 const material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 0 });
 const materialsurface = new THREE.MeshStandardMaterial({
-  color: 0xaaaaaa, // Base color of the material
-  metalness: 0.8,  // Higher value for more metallic appearance
-  roughness: 0.2, // Lower value for a shinier surface
+  color: 0x777777, // Base color of the material
+  metalness: 1,  // Higher value for more metallic appearance
+  roughness: 0.4, // Lower value for a shinier surface
 });
 
 // Create an instance of the ApiClient with the base URL
@@ -95,8 +96,9 @@ try {
 const time = unixToHumanReadable(positionData.creation_date);
 createTextbox("Creation Date: "+ time,'bottom-left');
 createTextbox("Case ID: "+positionData.case_id,'bottom-right');
+createTextbox("Last Updated: : "+positionData.last_updated,'bottom-left2');
 let off;
-const urls = ['/stl/get','/surface/getall'];
+const urls = ['/surface/getall'];
 let responseDatas = [];
 let responseData;
   try {
@@ -185,6 +187,11 @@ function createTextbox(text, position) {
       textbox.style.bottom = '10px';
       textbox.style.right = '10px';
   }
+  else if (position === 'bottom-left2') {
+    textbox.style.bottom = '75px';
+    textbox.style.left = '10px';
+}
+  
   document.body.appendChild(textbox);
 }
 function unixToHumanReadable(unixTimestamp) {

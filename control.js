@@ -1,4 +1,4 @@
-import { GUI } from 'https://cdn.skypack.dev/dat.gui';
+import { GUI } from '/node_modules/dat.gui/build/dat.gui.module.js';
 
 function addVisibilityAndTransparencyControls(parentObject, name) {
     const guiContainer = document.createElement('div');
@@ -11,6 +11,9 @@ function addVisibilityAndTransparencyControls(parentObject, name) {
 
     const gui = new GUI({ autoPlace: false });
     guiContainer.appendChild(gui.domElement);
+    var customCSS = document.createElement('style');
+customCSS.innerHTML = '.dg .main { font-size: 50px; }'; // Adjust font size as needed
+document.head.appendChild(customCSS);
 
     parentObject.children.forEach((child, index) => {
         if (child.isMesh) {
