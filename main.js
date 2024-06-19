@@ -277,7 +277,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
 if(objToRender === 'dino'){
     controls = new TrackballControls(camera, renderer.domElement);
     controls.rotateSpeed = 2.0;
-    controls.zoomSpeed = 1.8;
+    controls.zoomSpeed = -1.8;
     controls.panSpeed = 20;
     controls.noZoom = false;
     controls.noPan = false;
