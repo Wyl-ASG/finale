@@ -1,6 +1,7 @@
 // resetButton.js
-export function addResetButton(camera, controls) {
+export function addResetButton(camera,clone,controls) {
     // Create the reset button
+    console.log(clone);
     const resetButton = document.createElement('button');
     resetButton.textContent = 'Reset Camera';
     resetButton.id = 'reset-button';
@@ -31,15 +32,17 @@ resetButton.style.height = '35px';
         // If you're using OrbitControls, reset the controls as well
 
 
-        camera.position.set(0,0,50);
+        camera.copy(clone)
+        // Reset the camera zoom
         camera.zoom = 7;
         camera.updateProjectionMatrix();
-        console.log(camera);
+        // Reset controls target and update controls
         controls.target.set(0, 0, 0);
-        controls.object.position.copy(camera.position);
-
-        // Call controls.update() to apply the changes
         controls.update();
+        console.log('Camera reset:');
+        console.log('Position:', camera.position);
+        console.log('Rotation:', camera.rotation);
+        console.log('Zoom:', camera.zoom);
 
     }
 

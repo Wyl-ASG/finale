@@ -2,6 +2,8 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
 // To allow for the camera to move around the scene
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
+
+import { TrackballControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/TrackballControls.js";
 // Import the OFFLoader class
 import { OFFLoader } from './OFFLoader.js';
 // Import the ApiClient class
@@ -150,7 +152,7 @@ for (const offFile of responseDatas) {
       }
           */
     // Add the mesh to the parent object
-    if(offFile.filename.includes('upper'))
+    if(offFile.type.includes('upper'))
       {
         console.log('check');
         changeMeshRotation(mesh,1,1,180);
@@ -273,14 +275,25 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
 
 // This adds controls to the camera, so we can rotate / zoom it with the mouse
 if(objToRender === 'dino'){
-controls = new OrbitControls(camera, renderer.domElement);
+    controls = new TrackballControls(camera, renderer.domElement);
+    controls.rotateSpeed = 2.0;
+    controls.zoomSpeed = 1.8;
+    controls.panSpeed = 20;
+    controls.noZoom = false;
+    controls.noPan = false;
+    controls.staticMoving = true;
+    controls.dynamicDampingFactor = 0.3;
+
+
+
+    console.log('changed2');
 }
 
 // Render the scene
 function animate() {
   requestAnimationFrame(animate);
   // Here we could add some code to update the scene, adding some automatic movement
-
+  controls.update();
   // Make the eye move
 
   renderer.render(scene, camera);
@@ -298,11 +311,13 @@ document.onmousemove = (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 };
-camera.position.set(0,0,50);
+
+
+
 camera.zoom =7;
 camera.updateProjectionMatrix();
-console.log(camera);
-addResetButton(camera, controls);
+const clonedCamera = camera.clone();
+addResetButton(camera,clonedCamera, controls);
 console.log(camera)
 
 
