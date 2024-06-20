@@ -27,7 +27,9 @@ class CustomTrackballControls extends TrackballControls {
         const dx = event.touches[0].pageX - event.touches[1].pageX;
         const dy = event.touches[0].pageY - event.touches[1].pageY;
         const distance = Math.sqrt(dx * dx + dy * dy);
-
+        console.log(distance);
+        console.log('dx'+dx);
+        console.log('dy'+dy);
         if (this.prevDistance === undefined) {
             this.prevDistance = distance;
         }
