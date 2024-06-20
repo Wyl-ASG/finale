@@ -289,7 +289,7 @@ if(objToRender === 'dino'){
     controls.rotateSpeed = 2.0;
     orb_controls.zoomSpeed = 1;
     orb_controls.enableRotate =false;
-    orb_controls.enabelePan = false;
+    orb_controls.enabelePan = true;
 
     controls.panSpeed = 20;
     controls.noZoom = true;
