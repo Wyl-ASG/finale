@@ -3,7 +3,9 @@ import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module
 // To allow for the camera to move around the scene
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
 
-import { CustomTrackballControls } from './custom.js';
+import { TrackballControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/TrackballControls.js";
+
+
 
 // Import the OFFLoader class
 import { OFFLoader } from './OFFLoader.js';
@@ -47,6 +49,7 @@ let mouseY = window.innerHeight / 2;
 
 // OrbitControls allow the camera to move around the scene
 let controls;
+let orb_controls;
 
 // Set which object to render
 let objToRender = 'dino';
@@ -280,14 +283,17 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
 
 // This adds controls to the camera, so we can rotate / zoom it with the mouse
 if(objToRender === 'dino'){
-    controls = new CustomTrackballControls(camera, renderer.domElement);
+    controls = new TrackballControls(camera, renderer.domElement);
+    orb_controls = new OrbitControls(camera,renderer.domElement);
     
     controls.rotateSpeed = 2.0;
-    controls.zoomSpeed = 1.8;
-    controls.noPan = false;
+    orb_controls.zoomSpeed = 1;
+    orb_controls.enableRotate =false;
+    orb_controls.enabelePan = false;
+
     controls.panSpeed = 20;
-    controls.noZoom = false;
-    controls.noPan = false;
+    controls.noZoom = true;
+    controls.noPan = true;
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
 
