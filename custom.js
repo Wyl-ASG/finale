@@ -41,9 +41,9 @@ class CustomTrackballControls extends TrackballControls {
 
         const zoomFactor = 1.0 + (this.initialDistance - currentDistance) * 0.00002;
         if (this.zoomInverted) {
-            this.object.zoom *= zoomFactor;
-        } else {
             this.object.zoom /= zoomFactor;
+        } else {
+            this.object.zoom *= zoomFactor;
         }
 
         this.object.updateProjectionMatrix();
