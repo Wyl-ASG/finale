@@ -45,7 +45,7 @@ class CustomTrackballControls extends TrackballControls {
             console.log('inverted'+ this.object.zoom)
         } else {
             console.log(zoomFactor);
-            console.log(zoomeFactor*this.object.zoom);
+            console.log(zoomFactor*this.object.zoom);
             this.object.zoom = zoomFactor*this.object.zoom;
             console.log('noninverted'+ this.object.zoom)
         }
