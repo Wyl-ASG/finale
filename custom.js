@@ -6,35 +6,36 @@ class CustomTrackballControls extends TrackballControls {
         super(object, domElement);
 
         this.zoomInverted = false;
-        this.prevDistance = undefined;
+        this.initialDistance = undefined;
 
-        // Bind custom touch move dolly function
-        this.domElement.addEventListener('touchmove', (event) => {
-            if (this.enabled === false) return;
-            this.handleTouchMoveDolly(event);
-        }, false);
+        // Bind custom touch events
+        this.domElement.addEventListener('touchstart', (event) => this.handleTouchStart(event), false);
+        this.domElement.addEventListener('touchmove', (event) => this.handleTouchMoveDolly(event), false);
+        this.domElement.addEventListener('touchend', () => this.handleTouchEnd(), false);
+    }
 
-        this.domElement.addEventListener('touchend', () => {
-            this.prevDistance = undefined;
-        }, false);
+    handleTouchStart(event) {
+        if (event.touches.length === 2) {
+            const dx = event.touches[0].pageX - event.touches[1].pageX;
+            const dy = event.touches[0].pageY - event.touches[1].pageY;
+            this.initialDistance = Math.sqrt(dx * dx + dy * dy);
+        }
     }
 
     handleTouchMoveDolly(event) {
-        if (this.enabled === false) return;
+        if (this.enabled === false || event.touches.length !== 2) return;
 
         event.preventDefault();
 
         const dx = event.touches[0].pageX - event.touches[1].pageX;
         const dy = event.touches[0].pageY - event.touches[1].pageY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        console.log(distance);
-        console.log('dx'+dx);
-        console.log('dy'+dy);
-        if (this.prevDistance === undefined) {
-            this.prevDistance = distance;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+
+        if (this.initialDistance === undefined) {
+            this.initialDistance = currentDistance;
         }
 
-        const zoomFactor = 1.0 + (this.prevDistance - distance) * 0.02;
+        const zoomFactor = 1.0 + (this.initialDistance - currentDistance) * 0.002;
         if (this.zoomInverted) {
             this.object.zoom *= zoomFactor;
         } else {
@@ -42,7 +43,10 @@ class CustomTrackballControls extends TrackballControls {
         }
 
         this.object.updateProjectionMatrix();
-        this.prevDistance = distance;
+    }
+
+    handleTouchEnd() {
+        this.initialDistance = undefined;
     }
 }
 
