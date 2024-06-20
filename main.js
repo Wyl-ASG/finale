@@ -3,7 +3,8 @@ import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module
 // To allow for the camera to move around the scene
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
 
-import { TrackballControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/TrackballControls.js";
+import { CustomTrackballControls } from './custom.js';
+
 // Import the OFFLoader class
 import { OFFLoader } from './OFFLoader.js';
 // Import the ApiClient class
@@ -62,7 +63,9 @@ const materialsurface = new THREE.MeshStandardMaterial({
 const apiClient = new ApiClient('https://35.198.233.36:8090/api/smartrpd');
 const parentObject = new THREE.Object3D();
 scene.add(parentObject);
+
 (async () => {
+  
 const data = {
   machine_id: '3a0df9c37b50873c63cebecd7bed73152a5ef616',
   uuid: 'm+Cakg1hzVqCwVeJfNGRpSyvRXv4',
@@ -70,6 +73,7 @@ const data = {
 };
 let positionDatas = [];
 let positionData;
+/*
 const loginData = {
   id: 0,
   username:"faid",
@@ -83,13 +87,14 @@ const loginData = {
 
   
 }
-const urldatas = ['/user/login','/case/get/'+paramValue];
+  */
+const urldatas = ['/case/get/'+paramValue];
 try {
   // Call the post method and wait for the response
   for(const urldata of urldatas)
     {
   
-  positionData = await apiClient.post(urldata, [data,loginData]);
+  positionData = await apiClient.post(urldata, [data]);
   console.log('Success:', positionData)
   positionDatas = positionDatas.concat(positionData);
     }
@@ -275,14 +280,17 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
 
 // This adds controls to the camera, so we can rotate / zoom it with the mouse
 if(objToRender === 'dino'){
-    controls = new TrackballControls(camera, renderer.domElement);
+    controls = new CustomTrackballControls(camera, renderer.domElement);
+    
     controls.rotateSpeed = 2.0;
-    controls.zoomSpeed = -1.8;
+    controls.zoomSpeed = 1.8;
+    controls.noPan = false;
     controls.panSpeed = 20;
     controls.noZoom = false;
     controls.noPan = false;
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
+
 
 
 
