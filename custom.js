@@ -35,15 +35,16 @@ class CustomTrackballControls extends TrackballControls {
         if (this.initialDistance === undefined) {
             this.initialDistance = currentDistance;
         }
-        console.log((this.initialDistance - currentDistance));
+        console.log((currentDistance - this.initialDistance));
         console.log('dx'+dx);
         console.log('dy'+dy);
 
-        const zoomFactor = 1.0 + (-this.initialDistance + currentDistance) * 0.00002;
+        const zoomFactor = 1.0 + (currentDistance - this.initialDistance) * 0.00002;
         if (this.zoomInverted) {
             this.object.zoom /= zoomFactor;
             console.log('inverted'+ this.object.zoom)
         } else {
+            console.log(zoomFactor);
             this.object.zoom *= zoomFactor;
             console.log('noninverted'+ this.object.zoom)
         }
