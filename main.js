@@ -293,7 +293,7 @@ if(objToRender === 'dino'){
 
     controls.panSpeed = 20;
     controls.noZoom = true;
-    controls.noPan = true;
+    controls.noPan = false;
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
 
