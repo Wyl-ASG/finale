@@ -7,6 +7,7 @@ Build Overview
 bundle.js: The main build file containing the bundled JavaScript code for the web viewer application.
 script.js: Contains the JavaScript code for displaying a loading bar when the page is being opened.
 index.html: Main page
+/css: contains the css styling for only the index.html
 
 The rest are just images
 
